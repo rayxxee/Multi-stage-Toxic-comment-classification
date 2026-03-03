@@ -103,6 +103,7 @@ models/saved_models/
 
 # Logs and checkpoints
 logs/
+*.log
 checkpoints/
 *.ckpt
 tensorboard/
