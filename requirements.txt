@@ -1,0 +1,17 @@
+pandas
+numpy
+scikit-learn
+pyyaml
+regex
+matplotlib
+seaborn
+jupyter
+fasttext-wheel
+transformers
+torch
+accelerate
+joblib
+tiktoken
+datasets
+sentencepiece
+protobuf
