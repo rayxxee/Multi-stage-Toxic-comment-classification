@@ -1,6 +1,6 @@
-# Toxic Comment Classifier - Assignment 2
+# Toxic Comment Classifier - Assignment 3
 
-> **Assignment 2 Submission**
+> **Assignment 3 Submission: Model as a Service**
 
 ## Project Overview
 
@@ -60,7 +60,7 @@ The resulting files (`gatekeeper.joblib`, `fasttext.joblib`) will populate the `
 To execute the hierarchical pipeline (Clean -> Label -> Split -> Evaluate):
 
 ```bash
-python main.py
+python evaluate_pipeline.py
 ```
 
 - This script dynamically routes data.
@@ -77,6 +77,33 @@ pytest test_models/
 ```
 
 This will confirm the determinism and architectural validity of the independent model structures.
+
+### 6. Running the API Server (Model as a Service)
+
+The project includes a FastAPI-based REST API that exposes the hierarchical pipeline for predictions.
+To start the API server:
+
+```bash
+uvicorn src.api.main:app --reload
+```
+
+Once running, you can access the automatically generated Swagger (OpenAPI) documentation at:
+- `http://127.0.0.1:8000/docs`
+
+You can test the prediction endpoint via `POST /api/v1/predict` bypassing texts into the `texts` array.
+
+### 7. Running the API Stress Tests
+
+To evaluate latency and throughput under load, we use Locust:
+
+1. Ensure your FastAPI server is running (Step 6).
+2. Start the stress test via the command line:
+
+```bash
+locust -f tests/locustfile.py --headless -u 100 -r 10 --run-time 30s -H http://127.0.0.1:8000
+```
+
+This simulates 100 concurrent users with a spawn rate of 10 users per second, hitting the prediction endpoint for 30 seconds.
 
 ---
 

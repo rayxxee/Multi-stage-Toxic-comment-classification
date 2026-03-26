@@ -1,7 +1,7 @@
 import pandas as pd
 import yaml
 import os
-import argparse
+import joblib
 from src.utils import set_seed, setup_logger
 from src.data.cleaner import TextCleaner
 from src.data.labeller import Labeller
@@ -89,11 +89,9 @@ def main():
     # --- FastText ---
     fasttext_path = os.path.join(models_dir, 'fasttext.joblib')
     if not os.path.exists(fasttext_path):
-        import joblib
         logger.error(f"Model not found: {fasttext_path}. Please run train.py first.")
         return
     logger.info("Loading FastText...")
-    import joblib
     fasttext_model = joblib.load(fasttext_path)
 
     import matplotlib.pyplot as plt

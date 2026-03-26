@@ -15,3 +15,7 @@ tiktoken
 datasets
 sentencepiece
 protobuf
+fastapi
+uvicorn[standard]
+pydantic
+locust
