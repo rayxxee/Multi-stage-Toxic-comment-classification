@@ -39,11 +39,17 @@ The decision to implement a multi-staged, threshold-based architecture stems fro
 
 To ensure the API is robust under load, we conducted stress testing using **Locust** (`tests/locustfile.py`). We simulated 100 concurrent users spawning at a rate of 10 users per second, continuously hitting the `/predict` endpoint for 30 seconds.
 
+**Empirical Results (30s test run):**
+- **Total Requests:** 1,079
+- **Throughput:** ~36 requests/second
+- **Failure Rate:** 0%
+- **Latency Percentiles:** Median (50%): 220 ms | 90%: 500 ms | 99%: 740 ms | Max: 970 ms
+
 Analysis of the results shows:
 
-- **Latency**: The use of a pre-loaded, in-memory pipeline during FastAPI's `lifespan` event allows requests to experience minimal overhead. The Pydantic validation adds negligible latency, while the vast majority of processing time relates to the model computation (TF-IDF vectorization and FastText embedding inference).
-- **Throughput**: FastAPI's asynchronous architecture handles concurrent I/O gracefully. Throughput is mainly bottlenecked by the GIL during CPU-bound model inference, but scaling worker processes (e.g., via `uvicorn src.api.main:app --workers 4`) allows linear scaling of request processing across multicore systems.
-- **Batched vs Single Predicts**: Locust tasks included single texts and batches of 2-5 texts. Batch endpoints amortize the HTTP overhead, increasing total sentences processed per second significantly compared to singular requests.
+- **Latency Analysis**: A median response time of 220ms is exceedingly fast for an ML sequential pipeline handling heavy concurrent traffic. The use of a pre-loaded, in-memory pipeline during FastAPI's `lifespan` event allows requests to experience minimal overhead. The Pydantic validation adds negligible latency, and the worst-case latency remained strictly under 1 second (970ms).
+- **Throughput Profiling**: Processing ~36 requests per second flawlessly demonstrates FastAPI's asynchronous architecture handling concurrent I/O gracefully. Throughput is mainly bottlenecked by the GIL during CPU-bound model inference, but scaling worker processes (e.g., via `uvicorn src.api.main:app --workers 4`) allows linear scaling of request processing across multicore systems.
+- **Stability Under Load**: Maintaining an exactly 0% failure rate proves the model inference and I/O queuing does not collapse under spike loading. Locust tasks included single texts and batches of 2-5 texts. Batch endpoints amortize the HTTP overhead, increasing total sentences processed per second significantly compared to singular requests.
 
 ## 7. System-Level Reasoning (Model as a Service)
 

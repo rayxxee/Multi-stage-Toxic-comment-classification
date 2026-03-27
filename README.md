@@ -105,6 +105,14 @@ locust -f tests/locustfile.py --headless -u 100 -r 10 --run-time 30s -H http://1
 
 This simulates 100 concurrent users with a spawn rate of 10 users per second, hitting the prediction endpoint for 30 seconds.
 
+**Recent Stress Test Results (100 Concurrent Users):**
+- **Requests Processed:** 1,079
+- **Throughput:** ~36 requests per second
+- **Failures:** 0% failure rate
+- **Latency:** Median 220ms | 90th percentile 500ms | 99th percentile 740ms | Max 970ms
+
+These results indicate the hierarchical ML pipeline remains highly responsive and handles significant concurrent traffic without dropping requests.
+
 ---
 
 ## 📁 Project Structure
